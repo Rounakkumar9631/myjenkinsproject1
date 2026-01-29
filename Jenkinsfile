@@ -3,26 +3,33 @@ pipeline {
 agent any 
 
 stages {
-	stage ('SCM') {
+	stage ('Code Checkout') {
 		steps { 
-			echo "git pull my code"
+			git 'https://github.com/Rounakkumar9631/myjenkinsproject1.git'
 			}
 		}
-	stage ('Deploy') {
+	stage ('Build Docker image') {
 		steps {
-			echo "deploy my code"
+			sh 'docker build -t myapp:latest .'
 			}
 		}
-	stage ('Test') {
+	stage ('Run Test') {
 		steps {
-			echo "test my code"
+			sh 'echo Running tests...'
 			}
 		}
-	stage ('Deploy to prod') {
+	stage ('push Docker image') {
 		steps {
-			echo "final code of prod"
+			sh '''
+			docker tag myapp:latest rounakj06/myapp:latest
+			docker push rounakj06/myapp:latest
+			'''
 			}
 		}
-
+	stage ('Deploy to Kubernetes') {
+		steps {
+			sh 'kubectl apply -f deployment.yaml'
+			}	
+		}
 	}
 }

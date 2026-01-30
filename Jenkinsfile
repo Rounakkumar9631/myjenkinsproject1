@@ -21,6 +21,7 @@ stages {
 	stage ('push Docker image') {
 		steps {
 			sh '''
+			docker login -u rounakj06 -p rounakjaiswal
 			docker tag myapp:latest rounakj06/myapp:latest
 			docker push rounakj06/myapp:latest
 			'''
